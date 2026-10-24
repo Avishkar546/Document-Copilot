@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class User(Base, TimestampMixin):
     __tablename__ = "users"
 
-    id: Mapped[UUID] = mapped_column(
+    id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         primary_key=True,
     )
@@ -26,4 +26,4 @@ class User(Base, TimestampMixin):
     chat_threads: Mapped[list[ChatThread]] = relationship(back_populates="owner")
 
 
-__all__ = ["Profile"]
+__all__ = ["User"]
