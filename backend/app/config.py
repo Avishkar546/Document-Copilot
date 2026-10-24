@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     supabase_anon_key: str
     supabase_service_role_key: str
     database_url: str
+    app_database_url: str
 
     # Comma-separated in .env; use `cors_origins` for the parsed list.
     allowed_origins: str = "http://localhost:5173"
@@ -24,8 +25,17 @@ class Settings(BaseSettings):
     @computed_field
     @property
     def sqlalchemy_database_url(self) -> str:
-        """Normalize Supabase-style URLs for SQLAlchemy + psycopg v3."""
-        url = self.database_url
+        """Normalize the migration URL for SQLAlchemy + psycopg v3."""
+        return self._normalize_postgres_url(self.database_url)
+
+    @computed_field
+    @property
+    def sqlalchemy_app_database_url(self) -> str:
+        """Normalize the least-privilege application URL for psycopg v3."""
+        return self._normalize_postgres_url(self.app_database_url)
+
+    @staticmethod
+    def _normalize_postgres_url(url: str) -> str:
         if url.startswith("postgresql://"):
             return url.replace("postgresql://", "postgresql+psycopg://", 1)
         if url.startswith("postgres://"):
