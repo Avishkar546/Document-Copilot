@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     @property
     def sqlalchemy_app_database_url(self) -> str:
         """Normalize the least-privilege application URL for psycopg v3."""
+        if self.app_database_url is None:
+            raise ValueError(
+                "APP_DATABASE_URL must be set before the app can access the database"
+            )
         return self._normalize_postgres_url(self.app_database_url)
 
     @staticmethod
